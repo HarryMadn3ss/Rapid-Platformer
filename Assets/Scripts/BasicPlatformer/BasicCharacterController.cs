@@ -37,6 +37,21 @@ public class BasicCharacterController : MonoBehaviour
         Debug.DrawLine(groundedCheckStart.position, groundedCheckEnd.position, Color.red);
 
         //Get Player input 
+        
+
+        // Detect if character sprite needs flipping
+        if (horizInput > 0 && !facingRight)
+        {
+            FlipSprite();
+        }
+        else if (horizInput < 0 && facingRight)
+        {
+            FlipSprite();
+        }
+    }
+
+    private void Update()
+    {
         horizInput = Input.GetAxis("Horizontal");
         //Move Character
         rb.velocity = new Vector2(horizInput * speed * Time.fixedDeltaTime, rb.velocity.y);
@@ -53,16 +68,6 @@ public class BasicCharacterController : MonoBehaviour
             Debug.Log("Jumping!");
 
             jumped = false;
-        }
-
-        // Detect if character sprite needs flipping
-        if (horizInput > 0 && !facingRight)
-        {
-            FlipSprite();
-        }
-        else if (horizInput < 0 && facingRight)
-        {
-            FlipSprite();
         }
     }
 
