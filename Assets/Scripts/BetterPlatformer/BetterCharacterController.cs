@@ -30,12 +30,16 @@ public class BetterCharacterController : MonoBehaviour
     protected Collider2D charCollision;
     protected Vector2 playerSize, boxSize;
 
+    Animator animator;
+    public bool isJumping;
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         charCollision = GetComponent<Collider2D>();
         playerSize = charCollision.bounds.extents;
         boxSize = new Vector2(playerSize.x, 0.05f);
+        animator = GetComponent<Animator>();
     }
 
     void FixedUpdate()
@@ -65,6 +69,8 @@ public class BetterCharacterController : MonoBehaviour
         {
             FlipSprite();
         }
+
+        
     }
 
     void Update()
@@ -72,6 +78,14 @@ public class BetterCharacterController : MonoBehaviour
         if (grounded)
         {
             currentjumpCount = maxJumps;
+            animator.SetBool("isJumping", false);
+            isJumping = false;
+
+            if (Input.GetButtonDown("Jump"))
+            {
+                animator.SetBool("isJumping", true);
+                isJumping = true;
+            }
         }
 
         //Input for jumping ***Multi Jumping***
@@ -80,10 +94,28 @@ public class BetterCharacterController : MonoBehaviour
             jumped = true;
             currentjumpCount--;
             Debug.Log("Should jump");
+            isJumping = true;
+            animator.SetBool("isJumping", true);
+        }
+
+        if(Input.GetButtonDown("Jump"))
+        {
+            animator.SetBool("isJumping", true);
+            isJumping = true;
         }
 
         //Get Player input 
-        horizInput = Input.GetAxis("Horizontal");     
+        horizInput = Input.GetAxis("Horizontal");
+        animator.SetFloat("Speed", Mathf.Abs(horizInput * speed * Time.fixedDeltaTime));
+
+        if(Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            animator.SetBool("isCrouching", true);
+        }
+        else if(Input.GetKeyUp(KeyCode.LeftControl))
+        {
+            animator.SetBool("isCrouching", false);
+        }
     }
 
     // Flip Character Sprite
