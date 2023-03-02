@@ -13,11 +13,13 @@ public class BetterCharacterController : MonoBehaviour
 {
     protected bool facingRight = true;
     protected bool jumped;
+    protected bool dashed;
     public int maxJumps;
     protected int currentjumpCount;
 
     public float speed = 5.0f;
     public float jumpForce = 1000;
+    public float dashForce = 200;
 
     private float horizInput;
 
@@ -51,6 +53,22 @@ public class BetterCharacterController : MonoBehaviour
         //Move Character
         rb.velocity = new Vector2(horizInput * speed * Time.fixedDeltaTime, rb.velocity.y);
 
+
+        if(rb.velocity.y > 0.5f)
+        {
+            animator.SetBool("isJumping", true);      
+        }
+        else if(rb.velocity.y < -0.5f)
+        {
+            animator.SetBool("isFalling", true);            
+        }       
+        else
+        {
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isFalling", false);
+        }
+
+
         //Jump
         if (jumped == true)
         {
@@ -58,6 +76,7 @@ public class BetterCharacterController : MonoBehaviour
             Debug.Log("Jumping!");
 
             jumped = false;
+            animator.SetBool("isJumping", true);
         }
 
         // Detect if character sprite needs flipping.
@@ -70,6 +89,20 @@ public class BetterCharacterController : MonoBehaviour
             FlipSprite();
         }
 
+        //dash
+        if(dashed == true)
+        {
+            if(facingRight)
+            {
+                rb.AddForce(new Vector2(dashForce, 0f), ForceMode2D.Impulse);
+                dashed = false;
+            }
+            if(!facingRight)
+            {
+                rb.AddForce(new Vector2(-dashForce, 0f), ForceMode2D.Impulse);
+                dashed = false;
+            }
+        }
         
     }
 
@@ -78,15 +111,21 @@ public class BetterCharacterController : MonoBehaviour
         if (grounded)
         {
             currentjumpCount = maxJumps;
-            animator.SetBool("isJumping", false);
+            //animator.SetBool("isJumping", false);
             isJumping = false;
 
             if (Input.GetButtonDown("Jump"))
             {
-                animator.SetBool("isJumping", true);
+                //animator.SetBool("isJumping", true);
                 isJumping = true;
             }
         }
+
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            dashed = true;
+        }
+        
 
         //Input for jumping ***Multi Jumping***
         if (Input.GetButtonDown("Jump") && currentjumpCount > 1)
@@ -95,12 +134,12 @@ public class BetterCharacterController : MonoBehaviour
             currentjumpCount--;
             Debug.Log("Should jump");
             isJumping = true;
-            animator.SetBool("isJumping", true);
+            //animator.SetBool("isJumping", true);
         }
 
         if(Input.GetButtonDown("Jump"))
         {
-            animator.SetBool("isJumping", true);
+            //animator.SetBool("isJumping", true);
             isJumping = true;
         }
 
