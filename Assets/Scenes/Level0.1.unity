@@ -7748,17 +7748,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 83e78380b8886b74d837a4ee22b38887, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxJumps: 2
+  maxJumps: 1
   speed: 325
   jumpForce: 500
   dashForce: 200
-  pushForce: 250
+  pushForce: 300
   grounded: 0
   rb: {fileID: 2049542869}
   groundedLayers:
     serializedVersion: 2
     m_Bits: 256
   isJumping: 0
+  ghost: {fileID: 3467722240633757604, guid: dea717ba9351b7d48936b326eab5e4ae, type: 3}
 --- !u!95 &2049542874
 Animator:
   serializedVersion: 4

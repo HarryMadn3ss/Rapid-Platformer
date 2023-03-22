@@ -37,7 +37,7 @@ public class BetterCharacterController : MonoBehaviour
     Animator animator;
     public bool isJumping;
 
-    
+    public GameObject ghost;
 
     void Awake()
     {
@@ -96,6 +96,7 @@ public class BetterCharacterController : MonoBehaviour
         //dash
         if(dashed == true)
         {
+            GameObject currentGhost = Instantiate(ghost, transform.position, transform.rotation);
             if(facingRight)
             {
                 rb.AddForce(new Vector2(dashForce, 0f), ForceMode2D.Impulse);
@@ -106,6 +107,7 @@ public class BetterCharacterController : MonoBehaviour
                 rb.AddForce(new Vector2(-dashForce, 0f), ForceMode2D.Impulse);
                 dashed = false;
             }
+            Destroy(currentGhost, 1f);
         }
         
     }
@@ -120,12 +122,12 @@ public class BetterCharacterController : MonoBehaviour
                 //animator.SetBool("isJumping", false);
                 isJumping = false;
 
-                if (Input.GetButtonDown("Jump"))
-                {
-                    //animator.SetBool("isJumping", true);
-                    isJumping = true;
-                }
+            if (Input.GetButtonDown("Jump"))
+            {
+                //animator.SetBool("isJumping", true);
+                jumped = true;
             }
+        }
 
             if(Input.GetKeyDown(KeyCode.LeftShift))
             {
@@ -134,20 +136,20 @@ public class BetterCharacterController : MonoBehaviour
         
 
             //Input for jumping ***Multi Jumping***
-            if (Input.GetButtonDown("Jump") && currentjumpCount > 1)
-            {
-                jumped = true;
-                currentjumpCount--;
-                Debug.Log("Should jump");
-                isJumping = true;
-                //animator.SetBool("isJumping", true);
-            }
+            //if (Input.GetButtonDown("Jump") && currentjumpCount == 1)
+            //{
+            //    jumped = true;
+            //    currentjumpCount--;
+            //    Debug.Log("Should jump");
+            //    isJumping = true;
+            //    //animator.SetBool("isJumping", true);
+            //}
 
-            if(Input.GetButtonDown("Jump"))
-            {
-                //animator.SetBool("isJumping", true);
-                isJumping = true;
-            }
+            //if(Input.GetButtonDown("Jump"))
+            //{
+            //    //animator.SetBool("isJumping", true);
+            //    isJumping = true;
+            //}
 
             //Get Player input 
             horizInput = Input.GetAxis("Horizontal");
@@ -185,7 +187,7 @@ public class BetterCharacterController : MonoBehaviour
             Vector2 enemyPos = enemyController.transform.position;
 
             Vector2 towardPlayer = playerPos - enemyPos;
-            towardPlayer.Normalize();
+            //towardPlayer.Normalize();
 
             rb.AddForce(towardPlayer * pushForce, ForceMode2D.Force);
         }
