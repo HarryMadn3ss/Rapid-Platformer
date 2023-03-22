@@ -20,6 +20,8 @@ public class enemyController : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         capsuleCollider = GetComponent<CapsuleCollider2D>();
         rb = GetComponent<Rigidbody2D>();
+
+        
         
     }
 
@@ -68,10 +70,13 @@ public class enemyController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D capsuleCollider)
     {
+        playerRB = capsuleCollider.gameObject.GetComponent<Rigidbody2D>();
+
         if (capsuleCollider.gameObject.CompareTag("Player") && playerRB.velocity.y < -1)
         {
             Destroy(this.gameObject);
         }
+      
     }
 
     

@@ -16,10 +16,12 @@ public class BetterCharacterController : MonoBehaviour
     protected bool dashed;
     public int maxJumps;
     protected int currentjumpCount;
+    
 
     public float speed = 5.0f;
     public float jumpForce = 1000;
     public float dashForce = 200;
+    public float pushForce = 250;
 
     private float horizInput;
 
@@ -34,6 +36,8 @@ public class BetterCharacterController : MonoBehaviour
 
     Animator animator;
     public bool isJumping;
+
+    
 
     void Awake()
     {
@@ -108,53 +112,57 @@ public class BetterCharacterController : MonoBehaviour
 
     void Update()
     {
-        if (grounded)
-        {
-            currentjumpCount = maxJumps;
-            //animator.SetBool("isJumping", false);
-            isJumping = false;
+        
+       
+            if (grounded)
+            {
+                currentjumpCount = maxJumps;
+                //animator.SetBool("isJumping", false);
+                isJumping = false;
 
-            if (Input.GetButtonDown("Jump"))
+                if (Input.GetButtonDown("Jump"))
+                {
+                    //animator.SetBool("isJumping", true);
+                    isJumping = true;
+                }
+            }
+
+            if(Input.GetKeyDown(KeyCode.LeftShift))
+            {
+                dashed = true;
+            }
+        
+
+            //Input for jumping ***Multi Jumping***
+            if (Input.GetButtonDown("Jump") && currentjumpCount > 1)
+            {
+                jumped = true;
+                currentjumpCount--;
+                Debug.Log("Should jump");
+                isJumping = true;
+                //animator.SetBool("isJumping", true);
+            }
+
+            if(Input.GetButtonDown("Jump"))
             {
                 //animator.SetBool("isJumping", true);
                 isJumping = true;
             }
-        }
 
-        if(Input.GetKeyDown(KeyCode.LeftShift))
-        {
-            dashed = true;
-        }
-        
+            //Get Player input 
+            horizInput = Input.GetAxis("Horizontal");
+            animator.SetFloat("Speed", Mathf.Abs(horizInput * speed * Time.fixedDeltaTime));
 
-        //Input for jumping ***Multi Jumping***
-        if (Input.GetButtonDown("Jump") && currentjumpCount > 1)
-        {
-            jumped = true;
-            currentjumpCount--;
-            Debug.Log("Should jump");
-            isJumping = true;
-            //animator.SetBool("isJumping", true);
-        }
-
-        if(Input.GetButtonDown("Jump"))
-        {
-            //animator.SetBool("isJumping", true);
-            isJumping = true;
-        }
-
-        //Get Player input 
-        horizInput = Input.GetAxis("Horizontal");
-        animator.SetFloat("Speed", Mathf.Abs(horizInput * speed * Time.fixedDeltaTime));
-
-        if(Input.GetKeyDown(KeyCode.LeftControl))
-        {
-            animator.SetBool("isCrouching", true);
-        }
-        else if(Input.GetKeyUp(KeyCode.LeftControl))
-        {
-            animator.SetBool("isCrouching", false);
-        }
+            if(Input.GetKeyDown(KeyCode.LeftControl))
+            {
+                animator.SetBool("isCrouching", true);
+            }
+            else if(Input.GetKeyUp(KeyCode.LeftControl))
+            {
+                animator.SetBool("isCrouching", false);
+            }       
+       
+       
     }
 
     // Flip Character Sprite
@@ -163,4 +171,25 @@ public class BetterCharacterController : MonoBehaviour
         facingRight = !facingRight;
         transform.Rotate(0, 180, 0);
     }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+
+
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+
+            Vector2 playerPos = transform.position;
+
+            enemyController enemyController = collision.gameObject.GetComponent<enemyController>();
+            Vector2 enemyPos = enemyController.transform.position;
+
+            Vector2 towardPlayer = playerPos - enemyPos;
+            towardPlayer.Normalize();
+
+            rb.AddForce(towardPlayer * pushForce, ForceMode2D.Force);
+        }
+    }
+
 }
+
