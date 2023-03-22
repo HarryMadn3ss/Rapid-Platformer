@@ -16,6 +16,8 @@ public class healthSystem : MonoBehaviour
 
 
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,7 +28,20 @@ public class healthSystem : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (playerHealth < 0)
+        
+        if (playerHealth == 2)
+        {
+            HP2.SetActive(false);
+        }
+        else if (playerHealth == 1)
+        {
+            HP1.SetActive(false);
+        }
+        else if (playerHealth == 0)
+        {
+            HP.SetActive(false);
+        }
+        else if (playerHealth < 0)
         {
             //reset level
         }
@@ -37,19 +52,16 @@ public class healthSystem : MonoBehaviour
         if (collision.gameObject.CompareTag("Enemy") && rb.velocity.y > -0.1)
         {
             playerHealth--;
-            if (playerHealth == 2)
-            {
-                HP2.SetActive(false);
-            }
-            else if (playerHealth == 1)
-            {
-                HP1.SetActive(false);
-            }
-            else if(playerHealth == 0) 
-            { 
-                HP.SetActive(false);
-            }
+           
             
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if(collision.gameObject.CompareTag("KillVolume"))
+        {
+            playerHealth--;
         }
     }
 }

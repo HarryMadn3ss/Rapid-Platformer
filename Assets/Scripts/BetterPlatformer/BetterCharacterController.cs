@@ -19,11 +19,13 @@ public class BetterCharacterController : MonoBehaviour
     
 
     public float speed = 5.0f;
+    public float climbSpeed = 2.0f;
     public float jumpForce = 1000;
     public float dashForce = 200;
     public float pushForce = 250;
 
     private float horizInput;
+    private float vertInput;
 
     public bool grounded;
 
@@ -56,6 +58,10 @@ public class BetterCharacterController : MonoBehaviour
 
         //Move Character
         rb.velocity = new Vector2(horizInput * speed * Time.fixedDeltaTime, rb.velocity.y);
+        if(rb.gravityScale == 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, vertInput * climbSpeed * Time.deltaTime);
+        }
 
 
         if(rb.velocity.y > 0.5f)
@@ -116,23 +122,23 @@ public class BetterCharacterController : MonoBehaviour
     {
         
        
-            if (grounded)
-            {
-                currentjumpCount = maxJumps;
+        if (grounded)
+        {
+            currentjumpCount = maxJumps;
                 //animator.SetBool("isJumping", false);
-                isJumping = false;
+            isJumping = false;
 
-            if (Input.GetButtonDown("Jump"))
-            {
+        if (Input.GetButtonDown("Jump"))
+        {
                 //animator.SetBool("isJumping", true);
-                jumped = true;
-            }
+            jumped = true;
+        }
         }
 
-            if(Input.GetKeyDown(KeyCode.LeftShift))
-            {
-                dashed = true;
-            }
+        if(Input.GetKeyDown(KeyCode.LeftShift))
+        {
+            dashed = true;
+        }
         
 
             //Input for jumping ***Multi Jumping***
@@ -152,17 +158,29 @@ public class BetterCharacterController : MonoBehaviour
             //}
 
             //Get Player input 
-            horizInput = Input.GetAxis("Horizontal");
-            animator.SetFloat("Speed", Mathf.Abs(horizInput * speed * Time.fixedDeltaTime));
+        horizInput = Input.GetAxis("Horizontal");
+        animator.SetFloat("Speed", Mathf.Abs(horizInput * speed * Time.fixedDeltaTime));
 
-            if(Input.GetKeyDown(KeyCode.LeftControl))
-            {
-                animator.SetBool("isCrouching", true);
-            }
-            else if(Input.GetKeyUp(KeyCode.LeftControl))
-            {
-                animator.SetBool("isCrouching", false);
-            }       
+        if(rb.gravityScale == 0)
+        {
+            vertInput = Input.GetAxis("Vertical");
+            animator.SetBool("isClimbing", true);
+        }
+        else if(rb.gravityScale == 1)
+        {
+            animator.SetBool("isClimbing", false);
+        }
+            
+            
+
+         if(Input.GetKeyDown(KeyCode.LeftControl))
+         {
+            animator.SetBool("isCrouching", true);
+         }
+         else if(Input.GetKeyUp(KeyCode.LeftControl))
+         {
+            animator.SetBool("isCrouching", false);
+         }       
        
        
     }
