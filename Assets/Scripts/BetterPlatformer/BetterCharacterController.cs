@@ -28,6 +28,10 @@ public class BetterCharacterController : MonoBehaviour
     private float vertInput;
 
     public bool grounded;
+    public bool wallCling;
+
+    
+    private float Timer = 0;
 
     public Rigidbody2D rb;
 
@@ -48,6 +52,7 @@ public class BetterCharacterController : MonoBehaviour
         playerSize = charCollision.bounds.extents;
         boxSize = new Vector2(playerSize.x, 0.05f);
         animator = GetComponent<Animator>();
+        
     }
 
     void FixedUpdate()
@@ -122,17 +127,22 @@ public class BetterCharacterController : MonoBehaviour
     {
         
        
-        if (grounded)
+        if (grounded || wallCling)
         {
             currentjumpCount = maxJumps;
                 //animator.SetBool("isJumping", false);
             isJumping = false;
 
-        if (Input.GetButtonDown("Jump"))
-        {
-                //animator.SetBool("isJumping", true);
-            jumped = true;
-        }
+            if (Input.GetButtonDown("Jump"))
+            {
+                
+                jumped = true;
+                if(wallCling)
+                {
+                    FlipSprite();
+                }                   
+
+            }
         }
 
         if(Input.GetKeyDown(KeyCode.LeftShift))
@@ -164,11 +174,11 @@ public class BetterCharacterController : MonoBehaviour
         if(rb.gravityScale == 0)
         {
             vertInput = Input.GetAxis("Vertical");
-            animator.SetBool("isClimbing", true);
+            //animator.SetBool("isClimbing", true);
         }
         else if(rb.gravityScale == 1)
         {
-            animator.SetBool("isClimbing", false);
+            //animator.SetBool("isClimbing", false);
         }
             
             
@@ -207,9 +217,23 @@ public class BetterCharacterController : MonoBehaviour
             Vector2 towardPlayer = playerPos - enemyPos;
             //towardPlayer.Normalize();
 
-            rb.AddForce(towardPlayer * pushForce, ForceMode2D.Force);
+            rb.AddForce(towardPlayer * 300, ForceMode2D.Force);
+            rb.velocity = new Vector2(towardPlayer.x * pushForce, rb.velocity.y);
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D boxCollider)
+    {
+        if(boxCollider.gameObject.CompareTag("Ground"))
+        {
+            rb.gravityScale = 0;
+            wallCling = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        rb.gravityScale = 1;
+        wallCling = false;
+    }
 }
 

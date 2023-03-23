@@ -6,10 +6,12 @@ public class climbableControlller : MonoBehaviour
 {
 
     Rigidbody2D playerRB;
+    Animator animator;
 
     private void Start()
     {
         playerRB = GetComponent<Rigidbody2D>();
+        animator = GetComponent<Animator>();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -18,6 +20,7 @@ public class climbableControlller : MonoBehaviour
         {
             playerRB.gravityScale = 0;
             playerRB.velocity = Vector3.zero;
+            animator.SetBool("isClimbing", true);
         }
     }
 
@@ -26,6 +29,7 @@ public class climbableControlller : MonoBehaviour
         if(collision.gameObject.CompareTag("Ladder"))
         {
             playerRB.gravityScale = 1;
+            animator.SetBool("isClimbing", false);
 
         }
     }
