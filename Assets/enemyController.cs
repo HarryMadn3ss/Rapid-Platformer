@@ -9,7 +9,7 @@ public class enemyController : MonoBehaviour
     public Rigidbody2D rb;
     public Rigidbody2D playerRB;
        
-    bool facingRight = true;
+    bool facingRight = false;
     int direction = 1;
     public float speed = 10;
 

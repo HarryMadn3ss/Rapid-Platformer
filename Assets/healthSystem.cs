@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class healthSystem : MonoBehaviour
 {
@@ -14,7 +15,7 @@ public class healthSystem : MonoBehaviour
 
     private Rigidbody2D rb;
 
-
+    
 
 
 
@@ -44,6 +45,7 @@ public class healthSystem : MonoBehaviour
         else if (playerHealth < 0)
         {
             //reset level
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);           
         }
     }
 

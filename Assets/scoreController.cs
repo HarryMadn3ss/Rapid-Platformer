@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class scoreController : MonoBehaviour
 {
@@ -28,6 +29,11 @@ public class scoreController : MonoBehaviour
         countDown = countDown - Time.deltaTime;
         Timer = Mathf.Round(countDown);
         timerText.text = (Timer).ToString();
+
+        if(Timer < 0)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        }
     
     }
 
